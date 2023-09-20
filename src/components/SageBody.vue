@@ -42,6 +42,6 @@ const dataFiltered = computed(() => {
 			type: currentProficiency.value,
 			proficiency
 		}
-	}).slice(0, 10)
+	}).slice(20, 60)
 })
 </script>

@@ -59,6 +59,7 @@ const schoolDetails = reactive({
 const svgRef = ref(null)
 const { resizeRef, resizeState } = useResizeObserver();
 const margin = { top: 10, right: 0, bottom: 30, left: 40 };
+const pallete = ['#ff9d9a','#fad3ad','#d4a6c8','#499894','#8cd17d','#f28e2b','#d8d2cf']
 onMounted(() => {
 	const svg = d3.select(svgRef.value)
 	const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
@@ -106,13 +107,17 @@ onMounted(() => {
 				.attr('cx', d => xScale(d.fee))
 				.attr('cy', d => yScale(d.proficiency))
 				.attr('r', 5)
-				.attr('fill', 'blue')
+				.attr('fill', (d, i) => fillColor(i))
 				.style("outline-style", "none")
 				.on("mouseover", mouseover)
 				.on("mousemove", mousemove)
 				.on("mouseout", mouseleave)
 				.on("click", mouseClick)
 				.on("blur", resetClick);
+			
+			function fillColor(idx) {
+				return pallete[idx % pallete.length]
+			}
 		}
 	})
 

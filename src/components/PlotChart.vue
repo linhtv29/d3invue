@@ -94,10 +94,10 @@ onMounted(() => {
 		function drawAxis() {
 			g.append('g')
 				.attr('transform', `translate(0,${cHeight})`)
-				.call(d3.axisBottom(xScale));
+				.call(d3.axisBottom(xScale).tickFormat(d => '$' + d));
 
 			g.append('g')
-				.call(d3.axisLeft(yScale));
+				.call(d3.axisLeft(yScale).tickFormat(d => d + "%"));
 		}
 
 		function drawPlot() {

@@ -7,10 +7,15 @@
 			</div>
 			<PlotChart @update-target="handleUpdateTarget" :data="dataFiltered" class="flex-1" />
 		</div>
-		<div class="w-[30%]">
+		<div class="w-[30%] flex flex-col">
 			<div class="text-center text-white bg-[#555] py-1">
-				<div class="mb-1 text-xl">{{currentTarget.name}}</div>
+				<div class="mb-1 text-xl">{{ currentTarget.name }}</div>
 				<div class="text-[15px]">Student Demographics</div>
+			</div>
+			<div class="flex flex-col justify-between flex-1 ">
+				<DonutBlock :ratio="currentTarget.lowIncome" label="Low Income" />
+				<DonutBlock :ratio="currentTarget.disabilities" label="Students with a Disability" />
+				<DonutBlock :ratio="currentTarget.ell" label="ELL" />
 			</div>
 		</div>
 	</div>
@@ -19,6 +24,7 @@
 import { ref, toRef, computed, reactive } from "vue"
 import { data } from "@/assets/MOCK_DATA.js";
 import PlotChart from "./PlotChart.vue";
+import DonutBlock from "./DonutBlock.vue";
 
 const props = defineProps({
 	currentProficiency: String,

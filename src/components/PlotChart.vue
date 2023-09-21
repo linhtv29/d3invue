@@ -1,10 +1,8 @@
 <template>
 	<div class="relative w-full" ref="resizeRef" id="chart-container">
 		<svg ref="svgRef">
-			<g id="x-axis" />
-			<g id="y-axis" />
 		</svg>
-		<div id="tooltip" class="absolute p-2 bg-white border border-gray-500 opacity-0 w-max ">
+		<div id="tooltip" class="absolute z-10 p-2 bg-white border border-gray-500 opacity-0 w-max ">
 			<div class="mb-2 text-base">{{ schoolDetails.name }}</div>
 			<div class="flex mb-2 text-xs">
 				<div class="text-gray-500">
@@ -199,4 +197,3 @@ onMounted(() => {
 })
 
 </script>
-<style scoped></style>

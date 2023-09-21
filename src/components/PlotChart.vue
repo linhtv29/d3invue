@@ -43,6 +43,8 @@ const props = defineProps({
 	data: Object
 })
 
+const emit = defineEmits(["updateTarget"])
+
 const data = toRef(props, "data")
 
 const schoolDetails = reactive({
@@ -59,7 +61,7 @@ const schoolDetails = reactive({
 const svgRef = ref(null)
 const { resizeRef, resizeState } = useResizeObserver();
 const margin = { top: 10, right: 0, bottom: 30, left: 40 };
-const pallete = ['#ff9d9a','#fad3ad','#d4a6c8','#499894','#8cd17d','#f28e2b','#d8d2cf']
+const pallete = ['#ff9d9a', '#fad3ad', '#d4a6c8', '#499894', '#8cd17d', '#f28e2b', '#d8d2cf']
 onMounted(() => {
 	const svg = d3.select(svgRef.value)
 	const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
@@ -77,6 +79,7 @@ onMounted(() => {
 		const yAvg = d3.mean(data.value, d => d.proficiency)
 		const xRuler = g.append('g')
 		const yRuler = g.append('g')
+		const nameAnchor = g.append('text').style('opacity', 0).attr('x', -100).attr('y', -100).attr('fill', '#555').style('font-size', 12).style("text-anchor", "middle")
 
 		drawAxis();
 		drawRuler();
@@ -114,53 +117,55 @@ onMounted(() => {
 				.on("mouseout", mouseleave)
 				.on("click", mouseClick)
 				.on("blur", resetClick);
-			
+
 			function fillColor(idx) {
 				return pallete[idx % pallete.length]
 			}
 		}
+		function mouseover(event, d) {
+			d3.select(this).style("cursor", "pointer");
+			schoolDetails.name = d.name
+			schoolDetails.fee = d.fee
+			schoolDetails.disabilities = d.disabilities
+			schoolDetails.ell = d.ell
+			schoolDetails.type = d.type
+			schoolDetails.proficiency = d.proficiency
+			tooltip
+				.style("opacity", 1)
+		}
+
+		function mousemove(event, d) {
+			tooltip
+				.style("left", (event.offsetX + 15) + "px")
+				.style("top", (event.offsetY + 15) + "px")
+		}
+
+		function mouseleave(event, d) {
+			d3.select(this).style("cursor", "default");
+			tooltip
+				.transition()
+				.duration(200)
+				.style("opacity", 0)
+				.duration(0)
+				.style("left", (-event.offsetX) + "px")
+				.style("top", (-event.offsetY) + "px")
+		}
+
+		function mouseClick(event, d) {
+			resetClick();
+			g.selectAll("circle").style("stroke-width", 0).style("opacity", 0.2)
+			d3.select(this)
+				.style("stroke", "gray")
+				.style("stroke-width", 2)
+				.style("opacity", 1);
+			nameAnchor.text(d.name).attr('x', xScale(d.fee)).attr('y', yScale(d.proficiency) + 20).style("opacity", 1)
+		}
+		function resetClick() {
+			g.selectAll("circle").style("stroke-width", 0).style("opacity", 1)
+			nameAnchor.attr('x', -100).attr('y', -100).style("opacity", 0)
+		}
 	})
 
-	function mouseover(event, d) {
-		d3.select(this).style("cursor", "pointer");
-		schoolDetails.name = d.name
-		schoolDetails.fee = d.fee
-		schoolDetails.disabilities = d.disabilities
-		schoolDetails.ell = d.ell
-		schoolDetails.type = d.type
-		schoolDetails.proficiency = d.proficiency
-		tooltip
-			.style("opacity", 1)
-	}
-
-	function mousemove(event, d) {
-		tooltip
-			.style("left", (event.offsetX + 15) + "px")
-			.style("top", (event.offsetY + 15) + "px")
-	}
-
-	function mouseleave(event, d) {
-		d3.select(this).style("cursor", "default");
-		tooltip
-			.transition()
-			.duration(200)
-			.style("opacity", 0)
-			.duration(0)
-			.style("left", (-event.offsetX) + "px")
-			.style("top", (-event.offsetY) + "px")
-	}
-
-	function mouseClick(event, d) {
-		resetClick();
-		g.selectAll("circle").style("stroke-width", 0).style("opacity", 0.2)
-		d3.select(this)
-			.style("stroke", "gray")
-			.style("stroke-width", 2)
-			.style("opacity", 1);
-	}
-	function resetClick() {
-		g.selectAll("circle").style("stroke-width", 0).style("opacity", 1)
-	}
 })
 
 </script>

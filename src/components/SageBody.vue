@@ -9,14 +9,14 @@
 		</div>
 		<div class="w-[30%]">
 			<div class="text-center text-white bg-[#555] py-1">
-				<div class="mb-1 text-xl">All</div>
+				<div class="mb-1 text-xl">{{currentTarget.name}}</div>
 				<div class="text-[15px]">Student Demographics</div>
 			</div>
 		</div>
 	</div>
 </template>
 <script setup>
-import { ref, toRef, computed } from "vue"
+import { ref, toRef, computed, reactive } from "vue"
 import { data } from "@/assets/MOCK_DATA.js";
 import PlotChart from "./PlotChart.vue";
 
@@ -25,6 +25,12 @@ const props = defineProps({
 })
 
 const currentProficiency = toRef(props, 'currentProficiency')
+const currentTarget = reactive({
+	name: "All",
+	lowIncome: "",
+	disabilities: "",
+	ell: "",
+})
 
 const dataFiltered = computed(() => {
 	return data.map(item => {

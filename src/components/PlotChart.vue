@@ -20,6 +20,12 @@
 			</div>
 			<div class="flex mb-1 text-xs">
 				<div class="text-gray-500">
+					Low income Students:
+				</div>
+				<div>{{ schoolDetails.lowIncome }}%</div>
+			</div>
+			<div class="flex mb-1 text-xs">
+				<div class="text-gray-500">
 					Students with Disabilities:
 				</div>
 				<div>{{ schoolDetails.disabilities }}%</div>
@@ -56,6 +62,7 @@ const schoolDetails = reactive({
 	fee: "",
 	disabilities: "",
 	ell: "",
+	lowIncome: ""
 })
 
 const svgRef = ref(null)
@@ -66,6 +73,7 @@ onMounted(() => {
 	const svg = d3.select(svgRef.value)
 	const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
 	const tooltip = d3.select('#tooltip')
+	resetTargetVal();
 
 	watchEffect(() => {
 		g.selectAll('*').remove()
@@ -130,6 +138,7 @@ onMounted(() => {
 			schoolDetails.ell = d.ell
 			schoolDetails.type = d.type
 			schoolDetails.proficiency = d.proficiency
+			schoolDetails.lowIncome = d.lowIncome
 			tooltip
 				.style("opacity", 1)
 		}
@@ -153,6 +162,7 @@ onMounted(() => {
 
 		function mouseClick(event, d) {
 			resetClick();
+			updateTargetVal(d)
 			g.selectAll("circle").style("stroke-width", 0).style("opacity", 0.2)
 			d3.select(this)
 				.style("stroke", "gray")
@@ -161,11 +171,31 @@ onMounted(() => {
 			nameAnchor.text(d.name).attr('x', xScale(d.fee)).attr('y', yScale(d.proficiency) + 20).style("opacity", 1)
 		}
 		function resetClick() {
+			resetTargetVal();
 			g.selectAll("circle").style("stroke-width", 0).style("opacity", 1)
 			nameAnchor.attr('x', -100).attr('y', -100).style("opacity", 0)
 		}
+
+		function updateTargetVal(d) {
+			const data = {
+				name: d.name,
+				lowIncome: d.lowIncome,
+				disabilities: d.disabilities,
+				ell: d.ell
+			}
+			emit("updateTarget", data)
+		}
 	})
 
+	function resetTargetVal() {
+		const eData = {
+			name: "All",
+			lowIncome: d3.mean(data.value, d => d.lowIncome),
+			disabilities: d3.mean(data.value, d => d.disabilities),
+			ell: d3.mean(data.value, d => d.ell)
+		}
+		emit("updateTarget", eData)
+	}
 })
 
 </script>

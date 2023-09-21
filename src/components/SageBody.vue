@@ -5,7 +5,7 @@
 				<div class="mb-1 text-xl"> SAGE Proficiency </div>
 				<div class="text-[15px]">Click on a School to See Demographic Details</div>
 			</div>
-			<PlotChart :data="dataFiltered" class="flex-1" />
+			<PlotChart @update-target="handleUpdateTarget" :data="dataFiltered" class="flex-1" />
 		</div>
 		<div class="w-[30%]">
 			<div class="text-center text-white bg-[#555] py-1">
@@ -43,6 +43,7 @@ const dataFiltered = computed(() => {
 			name: item.school_name,
 			students: item.number_of_students,
 			fee: item.average_tuition_fee,
+			lowIncome: item.low_income_students_percent,
 			disabilities: item.percentage_of_students_with_disabilities,
 			ell: item.percentage_of_english_speaking_students,
 			type: currentProficiency.value,
@@ -50,4 +51,11 @@ const dataFiltered = computed(() => {
 		}
 	}).slice(20, 60)
 })
+
+const handleUpdateTarget = (data) => {
+	currentTarget.name = data.name
+	currentTarget.lowIncome = data.lowIncome
+	currentTarget.disabilities = data.disabilities
+	currentTarget.ell = data.ell
+}
 </script>

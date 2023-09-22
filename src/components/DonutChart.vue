@@ -8,7 +8,7 @@
 				<div class="text-gray-500">
 					Statewide Average:
 				</div>
-				<div>{{ ratio }}%</div>
+				<div>{{ ratio && ratio.toFixed(2) }}%</div>
 			</div>
 		</div>
 	</div>

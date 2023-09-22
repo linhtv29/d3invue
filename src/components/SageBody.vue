@@ -55,7 +55,7 @@ const dataFiltered = computed(() => {
 			type: currentProficiency.value,
 			proficiency
 		}
-	}).slice(20, 60)
+	}).slice(10, 40)
 })
 
 const handleUpdateTarget = (data) => {

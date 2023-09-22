@@ -35,13 +35,14 @@ onMounted(() => {
 		svg.selectAll('*').remove()
 		const { width, height } = resizeState.dimensions
 		const radius = Math.min(width, height) / 2 - margin
+		const ratioVal = props.ratio ? `${parseFloat(props.ratio.toFixed(2))}%` : ""
 		svg.attr("width", width).attr("height", height)
 		const g = svg.append('g')
 			.attr('transform', `translate(${width / 2},${height / 2})`)
 			.on("mouseover", mouseover)
 			.on("mousemove", mousemove)
 			.on("mouseout", mouseleave)
-		g.append('text').text(`${props.ratio}%`)
+		g.append('text').text(ratioVal)
 			.style('text-anchor', 'middle')
 			.attr('transform', 'translate(0,5)')
 			.style('font-size', 14)

@@ -21,14 +21,43 @@
 			<div class="w-[152px] h-10 flex justify-center items-center text-4xl font-bold">{{ age }}</div>
 		</div>
 
-		<div class="text-[#00aeef] border-t border-[#aeaeae] mt-2 h-16 flex justify-center items-center border-b bg-[#f1fdff] font-bold text-xl">
-			{{ `You are older than ${age}% of All Vietnamese` }}
+		<div
+			class="text-[#00aeef] border-t border-[#aeaeae] mt-2 h-16 flex justify-center items-center border-b bg-[#f1fdff] font-bold text-xl">
+			{{ `You are older than ${ratio} of All Vietnamese` }}
 		</div>
+
+		<BarChart :data="readyData" :age="age" class="w-full h-[275px] my-3 border-t border-r border-[#aeaeae]" />
 	</div>
 </template>
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import SliderD3 from '../components/SliderD3.vue';
+import { vnData } from "@/assets/VN_POP.js"
+import BarChart from "../components/BarChart.vue";
 
 const age = ref(31);
+const gender = ref("females");
+
+const totalPop = vnData.reduce((acc, item) => acc + item.total, 0)
+const totalFemales = vnData.reduce((acc, item) => acc + item.females, 0)
+const totalMales = vnData.reduce((acc, item) => acc + item.males, 0)
+
+const readyData = computed(() => {
+	return vnData.map(item => {
+		return {
+			age: item.age,
+			sameAge: gender.value === "females" ? item.females
+				: gender.value == "all"
+					? item.total
+					: item.males,
+		}
+	})
+})
+const currentItem = computed(() => {
+	return vnData.find(item => item.age === age.value)
+})
+const ratio = computed(() => {
+	const ratio = gender.value === "females" ? currentItem.value.females / totalFemales : gender.value == "all" ? currentItem.total / totalPop : currentItem.males / totalMales
+	return `${(ratio*100).toFixed(0)}%`
+})
 </script>

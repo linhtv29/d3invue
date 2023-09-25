@@ -54,7 +54,7 @@ onMounted(() => {
 			if(event.x < 0 || event.x > width) return
 			const value = scale.invert(event.x).toFixed(0)
 			currentValue.value = value
-			emit("update-val", value)
+			emit("update-val", +value)
 		}
 
 		function dragEnded(event, d) {

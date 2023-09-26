@@ -43,7 +43,7 @@ const tooltipData = reactive({
 	sameAge: 0
 })
 
-const margin = { top: 0, right: 0, bottom: 40, left: 44 }
+const margin = { top: 0, right: 0, bottom: 40, left: 50 }
 
 onMounted(() => {
 	const svg = d3.select(barRef.value)
@@ -52,6 +52,9 @@ onMounted(() => {
 
 	const lineX = svg.append('line');
 	const lineY = svg.append('line');
+	
+	const title = svg.append('text')
+	const xTitle = svg.append('text')
 
 
 	watchEffect(() => {
@@ -66,6 +69,9 @@ onMounted(() => {
 		lineX.attr('x1', 0).attr('y1', cHeight).attr('x2', width).attr('y2', cHeight).attr('stroke', '#aeaeae')
 		lineY.attr('x1', margin.left).attr('y1', 0).attr('x2', margin.left).attr('y2', height).attr('stroke', '#aeaeae')
 
+		title.text('Number of Vietnamese').attr('x', -cHeight/2).attr('y', 10).style('text-anchor', 'middle').style('font-size', 10).attr('fill', '#aeaeae').attr('transform', 'rotate(-90)')
+		xTitle.text('Age').attr('x', margin.left + cWidth/2).attr('y', cHeight + 35 ).style('text-anchor', 'middle').style('font-size', 10).attr('fill', '#aeaeae')
+
 		drawAxis();
 		drawBars();
 		function drawAxis() {
@@ -76,7 +82,7 @@ onMounted(() => {
 			xAxis.selectAll('path').remove()
 			d3.select(xTexts.nodes()[0]).attr('transform', 'translate(4,0)')
 
-			const yAxis = g.append('g').call(d3.axisLeft(yScale))
+			const yAxis = g.append('g').call(d3.axisLeft(yScale).tickFormat(d => d/1000000 + "M"));
 			const yTexts = yAxis.selectAll('text')
 			yAxis.selectAll('path').remove()
 			d3.select(yTexts.nodes()[0]).attr('transform', 'translate(0,-8)')

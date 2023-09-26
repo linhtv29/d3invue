@@ -1,7 +1,25 @@
 <template>
 	<div class="relative" ref="resizeRef" id="bar-container">
 		<svg ref="barRef"></svg>
-		<div id="tooltip" class="absolute z-10 p-2 bg-white border border-gray-500 opacity-0 w-max "></div>
+		<div id="tooltip" class="absolute z-10 p-2 bg-white border border-gray-500 opacity-0 w-max ">
+			<div class="flex mb-1 text-xs">
+				<div class="text-gray-500">
+					Age:
+				</div>
+				<div>{{tooltipData.age}}</div>
+			</div>
+			<div class="flex mb-1 text-xs">
+				<div class="text-gray-500">
+					Number of people:
+				</div>
+				<div>{{tooltipData.sameAge}}</div>
+			</div>
+			<div class="flex mb-1 text-xs">
+				<div class="text-gray-500">
+					{{ `People this age are older than ${tooltipData.age}% of Vietnamese` }}
+				</div>
+			</div>
+		</div>
 		<slot></slot>
 	</div>
 </template>
@@ -19,6 +37,11 @@ const data = toRef(props, "data")
 
 const barRef = ref(null);
 const { resizeRef, resizeState } = useResizeObserver();
+
+const tooltipData = reactive({
+	age: 0,
+	sameAge: 0
+})
 
 const margin = { top: 0, right: 0, bottom: 40, left: 44 }
 
@@ -53,7 +76,7 @@ onMounted(() => {
 			xAxis.selectAll('path').remove()
 			d3.select(xTexts.nodes()[0]).attr('transform', 'translate(4,0)')
 
-			const yAxis = g.append('g') .call(d3.axisLeft(yScale))
+			const yAxis = g.append('g').call(d3.axisLeft(yScale))
 			const yTexts = yAxis.selectAll('text')
 			yAxis.selectAll('path').remove()
 			d3.select(yTexts.nodes()[0]).attr('transform', 'translate(0,-8)')
@@ -75,13 +98,49 @@ onMounted(() => {
 				.attr('width', (cWidth - 30) / 100 - 0.5)
 				.attr('fill', fillColor)
 				.attr('stroke', '#7f7f7f')
+				.on("mouseover", mouseover)
+				.on("mousemove", mousemove)
+				.on("mouseout", mouseleave)
+				.on("click", mouseClick)
+				.on("blur", resetClick);
 		}
 
-		function fillColor(d){
+		function fillColor(d) {
 			if (d.age < props.age) return '#c7c7c7'
 			if (d.age == props.age) return '#00aeef'
 			return '#7f7f7f'
 		}
 	})
+		function mouseover(event, d) {
+			d3.select(this).style("cursor", "pointer");
+			tooltipData.age = d.age
+			tooltipData.sameAge = d.sameAge
+			tooltip
+				.style("opacity", 1)
+		}
+
+		function mousemove(event, d) {
+			tooltip
+				.style("left", (event.offsetX + 15) + "px")
+				.style("top", (event.offsetY + 15) + "px")
+		}
+
+		function mouseleave(event, d) {
+			d3.select(this).style("cursor", "default");
+			tooltip
+				.style("opacity", 0)
+				.style("left", (-event.offsetX) + "px")
+				.style("top", (-event.offsetY) + "px")
+		}
+		function mouseClick(event, d) {
+			resetClick();
+			g.selectAll("rect").style("opacity", 0.2)
+			d3.select(this)
+				.style("stroke", "black")
+				.style("opacity", 1);
+		}
+		function resetClick() {
+			g.selectAll("rect").style("stroke", "#7f7f7f").style("stroke-width", 1).style("opacity", 1)
+		}
 })
 </script>

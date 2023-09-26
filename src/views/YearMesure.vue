@@ -4,7 +4,7 @@
 			<div class="text-[27px] text-[#555]">
 				<span> Are </span>
 				<span class="text-[#00aeef]">you</span>
-				<span> over the hill</span>
+				<span> over the hill?</span>
 			</div>
 			<div class="text-[15px] text-[#898989]">
 				<span>See how many Vietnamese are </span>
@@ -43,6 +43,23 @@
 				</div>
 			</div>
 		</BarChart>
+		<hr class="bg-[#f0f0f0] h-1 mb-4">
+		<div class="w-1/2 space-y-3 text-xs font-medium">
+			<div class="flex justify-between">
+				<div class="text-[#898989]">Vietnamese younger than you</div>
+				<div class="text-[#c0c0c0]">{{ totalYounger[gender].toLocaleString() }}</div>
+			</div>
+			<div class="flex justify-between">
+				<div class="text-[#898989]">Vietnamese the same age as you</div>
+				<div class="text-[#00aeef]">{{ sameAge?.toLocaleString() }}</div>
+			</div>
+			<div class="flex justify-between">
+				<div class="text-[#898989]">Vietnamese older than you</div>
+				<div class="text-[#333]"> {{ (totalReduce[gender] - totalYounger[gender] - sameAge).toLocaleString() }} </div>
+			</div>
+		</div>
+		<hr class="bg-[#f0f0f0] h-1 mt-4">
+		<div class="text-[#898989] text-[9px]">Population estimates as of 2023</div>
 	</div>
 </template>
 <script setup>
@@ -72,6 +89,12 @@ const genderText = computed(() => {
 })
 const totalYounger = computed(() => {
 	return vnData.slice(0, age.value).reduce((acc, item) => ({ females: acc.females + item.females, males: acc.males + item.males, all: acc.all + item.total }), { females: 0, males: 0, all: 0 })
+})
+const currentItem = computed(() => {
+	return vnData.find(item => item.age === age.value)
+})
+const sameAge = computed(() => {
+	return gender.value == "all" ? currentItem.value['total'] : currentItem.value[gender.value]
 })
 const ratio = computed(() => {
 	const ratio = gender.value === "females" ? totalYounger.value.females / totalReduce.females : gender.value == "all" ? totalYounger.value.all / totalReduce.all : totalYounger.value.males / totalReduce.males

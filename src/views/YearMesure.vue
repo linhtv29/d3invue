@@ -26,7 +26,23 @@
 			{{ `You are older than ${ratio} of ${genderText} Vietnamese` }}
 		</div>
 
-		<BarChart :data="readyData" :age="age" class="w-full h-[275px] my-3 border-t border-r border-[#aeaeae]" />
+		<BarChart :data="readyData" :age="age" class="w-full h-[275px] my-3 border-t border-r border-[#aeaeae]">
+			<div class="absolute text-xs right-1 top-5">
+				<div class="text-[#595959] font-bold mb-1">Select Gender</div>
+				<div class="flex text-[10px] pl-1">
+					<input type="radio" name="gender" value="all" v-model="gender" id="all">
+					<label class="ml-1" for="all">All</label>
+				</div>
+				<div class="flex text-[10px] pl-1">
+					<input type="radio" name="gender" value="females" v-model="gender" id="females">
+					<label class="ml-1" for="females">Female</label>
+				</div>
+				<div class="flex text-[10px] pl-1">
+					<input type="radio" name="gender" value="males" v-model="gender" id="males">
+					<label class="ml-1" for="males">Male</label>
+				</div>
+			</div>
+		</BarChart>
 	</div>
 </template>
 <script setup>
@@ -36,7 +52,7 @@ import { vnData } from "@/assets/VN_POP.js"
 import BarChart from "../components/BarChart.vue";
 
 const age = ref(31);
-const gender = ref("females");
+const gender = ref("all");
 
 const totalReduce = vnData.reduce((acc, item) => ({ females: acc.females + item.females, males: acc.males + item.males, all: acc.all + item.total }), { females: 0, males: 0, all: 0 })
 
@@ -58,7 +74,7 @@ const totalYounger = computed(() => {
 	return vnData.slice(0, age.value).reduce((acc, item) => ({ females: acc.females + item.females, males: acc.males + item.males, all: acc.all + item.total }), { females: 0, males: 0, all: 0 })
 })
 const ratio = computed(() => {
-	const ratio = gender.value === "females" ? totalYounger.value.females / totalReduce.females : gender.value == "all" ? totalYounger.value.all / totalReduce.all : totalYounger.value.males / totalReduce.all
+	const ratio = gender.value === "females" ? totalYounger.value.females / totalReduce.females : gender.value == "all" ? totalYounger.value.all / totalReduce.all : totalYounger.value.males / totalReduce.males
 	return `${(ratio * 100).toFixed(2)}%`
 })
 </script>

@@ -2,6 +2,7 @@
 	<div class="relative" ref="resizeRef" id="bar-container">
 		<svg ref="barRef"></svg>
 		<div id="tooltip" class="absolute z-10 p-2 bg-white border border-gray-500 opacity-0 w-max "></div>
+		<slot></slot>
 	</div>
 </template>
 <script setup>

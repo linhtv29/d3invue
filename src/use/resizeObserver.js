@@ -9,7 +9,6 @@ export const useResizeObserver = () => {
   const observer = new ResizeObserver(entries => {
     entries.forEach(entry => {
       resizeState.dimensions = entry.contentRect;
-			console.log("TCL: useResizeObserver -> resizeState.dimensions", resizeState.dimensions)
     });
   });
 

@@ -23,7 +23,7 @@
 
 		<div
 			class="text-[#00aeef] border-t border-[#aeaeae] mt-2 h-16 flex justify-center items-center border-b bg-[#f1fdff] font-bold text-xl">
-			{{ `You are older than ${ratio} of All Vietnamese` }}
+			{{ `You are older than ${ratio} of ${genderText} Vietnamese` }}
 		</div>
 
 		<BarChart :data="readyData" :age="age" class="w-full h-[275px] my-3 border-t border-r border-[#aeaeae]" />
@@ -38,9 +38,7 @@ import BarChart from "../components/BarChart.vue";
 const age = ref(31);
 const gender = ref("females");
 
-const totalPop = vnData.reduce((acc, item) => acc + item.total, 0)
-const totalFemales = vnData.reduce((acc, item) => acc + item.females, 0)
-const totalMales = vnData.reduce((acc, item) => acc + item.males, 0)
+const totalReduce = vnData.reduce((acc, item) => ({ females: acc.females + item.females, males: acc.males + item.males, all: acc.all + item.total }), { females: 0, males: 0, all: 0 })
 
 const readyData = computed(() => {
 	return vnData.map(item => {
@@ -53,11 +51,14 @@ const readyData = computed(() => {
 		}
 	})
 })
-const currentItem = computed(() => {
-	return vnData.find(item => item.age === age.value)
+const genderText = computed(() => {
+	return gender.value === "females" ? "Female" : gender.value == "all" ? "All" : "Male"
+})
+const totalYounger = computed(() => {
+	return vnData.slice(0, age.value).reduce((acc, item) => ({ females: acc.females + item.females, males: acc.males + item.males, all: acc.all + item.total }), { females: 0, males: 0, all: 0 })
 })
 const ratio = computed(() => {
-	const ratio = gender.value === "females" ? currentItem.value.females / totalFemales : gender.value == "all" ? currentItem.total / totalPop : currentItem.males / totalMales
-	return `${(ratio*100).toFixed(0)}%`
+	const ratio = gender.value === "females" ? totalYounger.value.females / totalReduce.females : gender.value == "all" ? totalYounger.value.all / totalReduce.all : totalYounger.value.males / totalReduce.all
+	return `${(ratio * 100).toFixed(2)}%`
 })
 </script>

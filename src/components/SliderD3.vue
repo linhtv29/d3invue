@@ -30,7 +30,7 @@ onMounted(() => {
 
 		g.attr('transform', `translate(0, ${height / 2})`)
 
-		const scale = d3.scaleLinear().domain([1, 99]).range([0, width])
+		const scale = d3.scaleLinear().domain([0, 100]).range([0, width])
 
 		g.append('line').attr('x1', 0).attr('y1', 0).attr('x2', width).attr('y2', 0).attr('stroke', '#f0f0f0').style("stroke-width", 5)
 		g.append('circle')

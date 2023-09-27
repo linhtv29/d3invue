@@ -16,7 +16,7 @@
 			</div>
 			<div class="flex mb-1 text-xs">
 				<div class="text-gray-500">
-					{{ `People this age are older than ${tooltipData.age}% of Vietnamese` }}
+					{{ `People this age are older than ${tooltipData.ratio}% of ${gender} Vietnamese` }}
 				</div>
 			</div>
 		</div>
@@ -30,8 +30,10 @@ import useResizeObserver from "../use/resizeObserver.js";
 
 const emit = defineEmits(["update-val"])
 const props = defineProps({
-	data: Object,
-	age: Number
+	data: Array,
+	age: Number,
+	gender: String,
+	totalReduce: Object 
 })
 const data = toRef(props, "data")
 
@@ -40,7 +42,8 @@ const { resizeRef, resizeState } = useResizeObserver();
 
 const tooltipData = reactive({
 	age: 0,
-	sameAge: 0
+	sameAge: 0,
+	ratio:0
 })
 
 const margin = { top: 0, right: 0, bottom: 40, left: 50 }
@@ -121,6 +124,7 @@ onMounted(() => {
 			d3.select(this).style("cursor", "pointer");
 			tooltipData.age = d.age
 			tooltipData.sameAge = d.sameAge
+			tooltipData.ratio = (data.value.slice(0, d.age).reduce((a, b) => a + b.sameAge, 0) / props.totalReduce[props.gender] * 100).toFixed(2)
 			tooltip
 				.style("opacity", 1)
 		}

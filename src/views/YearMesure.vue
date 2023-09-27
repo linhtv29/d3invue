@@ -26,7 +26,7 @@
 			{{ `You are older than ${ratio} of ${genderText} Vietnamese` }}
 		</div>
 
-		<BarChart :data="readyData" :age="age" class="w-full h-[275px] my-3 border-t border-r border-[#aeaeae]">
+		<BarChart :data="readyData" :age="age" :gender="gender" :total-reduce="totalReduce" class="w-full h-[275px] my-3 border-t border-r border-[#aeaeae]">
 			<div class="absolute text-xs right-1 top-5">
 				<div class="text-[#595959] font-bold mb-1">Select Gender</div>
 				<div class="flex text-[10px] pl-1">

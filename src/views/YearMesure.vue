@@ -26,7 +26,8 @@
 			{{ `You are older than ${ratio} of ${genderText} Vietnamese` }}
 		</div>
 
-		<BarChart :data="readyData" :age="age" :gender="gender" :total-reduce="totalReduce" class="w-full h-[275px] my-3 border-t border-r border-[#aeaeae]">
+		<BarChart :data="readyData" :age="age" :gender="gender" :total-reduce="totalReduce" @update-brush="handleBrushed"
+			class="w-full h-[275px] my-3 border-t border-r border-[#aeaeae]">
 			<div class="absolute text-xs right-1 top-5">
 				<div class="text-[#595959] font-bold mb-1">Select Gender</div>
 				<div class="flex text-[10px] pl-1">
@@ -44,18 +45,34 @@
 			</div>
 		</BarChart>
 		<hr class="bg-[#f0f0f0] h-1 mb-4">
-		<div class="w-1/2 space-y-3 text-xs font-medium">
-			<div class="flex justify-between">
-				<div class="text-[#898989]">Vietnamese younger than you</div>
-				<div class="text-[#c0c0c0]">{{ totalYounger[gender].toLocaleString() }}</div>
+		<div class="flex">
+			<div class="w-1/2 space-y-3 text-xs font-medium">
+				<div class="flex justify-between">
+					<div class="text-[#898989]">Vietnamese younger than you</div>
+					<div class="text-[#c0c0c0]">{{ totalYounger[gender].toLocaleString() }}</div>
+				</div>
+				<div class="flex justify-between">
+					<div class="text-[#898989]">Vietnamese the same age as you</div>
+					<div class="text-[#00aeef]">{{ sameAge?.toLocaleString() }}</div>
+				</div>
+				<div class="flex justify-between">
+					<div class="text-[#898989]">Vietnamese older than you</div>
+					<div class="text-[#333]"> {{ (totalReduce[gender] - totalYounger[gender] - sameAge).toLocaleString() }} </div>
+				</div>
 			</div>
-			<div class="flex justify-between">
-				<div class="text-[#898989]">Vietnamese the same age as you</div>
-				<div class="text-[#00aeef]">{{ sameAge?.toLocaleString() }}</div>
-			</div>
-			<div class="flex justify-between">
-				<div class="text-[#898989]">Vietnamese older than you</div>
-				<div class="text-[#333]"> {{ (totalReduce[gender] - totalYounger[gender] - sameAge).toLocaleString() }} </div>
+			<div class="flex-1 pl-3" v-if="brushedData.totalAge > 0">
+				<div class="text-[#898989]">
+					<span>There are</span>
+					<span class="text-orange-400">{{ ` ${brushedData.totalAge.toLocaleString()}` }}</span><span> people</span>
+				</div>
+				<div class="text-[#898989] text-center">
+					<span>Beween </span>
+					<span class="text-[#00aeef]">{{brushedData.startAge}}</span><span> and </span><span class="text-[#00aeef]">{{brushedData.endAge}}</span>
+				</div>
+				<div class="text-[#898989] text-end">
+					<span>Accounting for </span>
+					<span class="text-orange-400">{{brushedRatio}}%</span><span> of{{` ${gender}`}}</span>
+				</div>
 			</div>
 		</div>
 		<hr class="bg-[#f0f0f0] h-1 mt-4">
@@ -63,7 +80,7 @@
 	</div>
 </template>
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, reactive } from "vue";
 import SliderD3 from '../components/SliderD3.vue';
 import { vnData } from "@/assets/VN_POP.js"
 import BarChart from "../components/BarChart.vue";
@@ -73,6 +90,21 @@ const gender = ref("all");
 
 const totalReduce = vnData.reduce((acc, item) => ({ females: acc.females + item.females, males: acc.males + item.males, all: acc.all + item.total }), { females: 0, males: 0, all: 0 })
 
+const brushedData = reactive({
+	startAge: 0,
+	endAge: 0,
+	totalAge: 0
+})
+
+const handleBrushed = (data) => {
+	brushedData.startAge = data.startAge;
+	brushedData.endAge = data.endAge;
+	brushedData.totalAge = data.totalAge;
+}
+
+const brushedRatio = computed(() => {
+	return (brushedData.totalAge / totalReduce[gender.value] * 100).toFixed(2)
+})
 const readyData = computed(() => {
 	return vnData.map(item => {
 		return {

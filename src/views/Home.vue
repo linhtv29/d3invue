@@ -18,5 +18,9 @@ const links = [
 		path: 'bar',
 		title: 'Bar Chart'
 	},
+	{
+		path: 'radar',
+		title: 'Radar chart'
+	},
 ]
 </script>

@@ -19,8 +19,8 @@ const links = [
 		title: 'Bar Chart'
 	},
 	{
-		path: 'radar',
-		title: 'Radar chart'
+		path: 'retired',
+		title: 'Combine chart'
 	},
 ]
 </script>

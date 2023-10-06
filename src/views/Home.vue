@@ -19,6 +19,10 @@ const links = [
 		title: 'Bar Chart'
 	},
 	{
+		path: 'line-brush',
+		title: 'Line Brush'
+	},
+	{
 		path: 'retired',
 		title: 'Combine chart'
 	},

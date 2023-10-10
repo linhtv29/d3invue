@@ -26,5 +26,9 @@ const links = [
 		path: 'retired',
 		title: 'Combine chart'
 	},
+	{
+		path: 'box-plot',
+		title: 'Box Plot chart'
+	},
 ]
 </script>

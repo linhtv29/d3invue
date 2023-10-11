@@ -15,7 +15,8 @@
 					<div class="text-xs">{{ hoverYear }}</div>
 					<div class="text-xs">{{ `Retirement Percentage: ${retiredPercent}%` }}</div>
 				</div>
-				<div id="tooltip-amount" class="absolute z-10 hidden p-2 bg-white border rounded-md border-[rgb(11,104,162)] w-max ">
+				<div id="tooltip-amount"
+					class="absolute z-10 hidden p-2 bg-white border rounded-md border-[rgb(11,104,162)] w-max ">
 					<div class="text-xs">{{ hoverYear }}</div>
 					<div class="text-xs">{{ `Retirement Percentage: ${retiredAmount}` }}</div>
 				</div>
